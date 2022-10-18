@@ -2,6 +2,7 @@
 #define MAIN_H
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib>
 #include <unistd.h>
 
 #define UNUSED(x) (void)(x)
