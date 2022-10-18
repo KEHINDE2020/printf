@@ -37,7 +37,6 @@
  * @l_modifier: on if l_modifier is specified
  *
  */
-
 typedef struct parameters
 {
 	unsigned int unsign			: 1;
@@ -117,5 +116,4 @@ char *get_precision(char *p, params_t *params, va_list ap);
 /* _prinf.c module */
 int _printf(const char *format, ...);
 
-
-#endif /* MAIN_H_ */
+#endif

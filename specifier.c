@@ -123,7 +123,7 @@ char *get_width(char *s, params_t *params, va_list ap)
 {
 	int d = 0;
 
-	if (s == '')
+	if (*s == '*')
 	{
 		d = va_arg(ap, int);
 		s++;
