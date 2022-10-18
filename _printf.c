@@ -1,48 +1,49 @@
 #include "main.h"
 
 /**
- * _printf - main printf function
- * @format: string parameter
+ * _printf - prints anything
+ * @format: the format string
  *
- * Return: count of characters in @format
+ * Return: number of bytes printed
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	const char *str;
-	int (*func)(va_list, flag_t *, mod_t *);
-	flag_t f = {0, 0, 0};
-	mod_t m = {0, 0, 0};
-	int i, count = 0, num = 0;
+	int sum = 0;
+	va_list ap;
+	char *p, *start;
+	params_t params = PARAMS_INIT;
 
-	va_start(args, format);
+	va_start(ap, format);
+
 	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
 	if (format[0] == '%' && format[1] == ' ' && !format[2])
 		return (-1);
-	for (str = format; *str; str++)
+	for (p = (char *)format; *p; p++)
 	{
-		if (*str == '%')
+		init_params(&params, ap);
+		if (*p != '%')
 		{
-			str++;
-			if (*str == '%')
-			{
-				count += _putchar('%');
-				continue;
-			}
-			for (; get_flags(*str, &f); str++)
-			{}
-			for (i = 0; *str >= 48 && *str <= 57; str++, i++)
-				num = (num * (i * 10)) + (*str - '0');
-			set_width(num, &m);
-			for (; get_modifier(*str, &m); str++)
-			{}
-			func = get_func(*str);
-			count += (func) ? func(args, &f, &m)
-					: _printf("%%%c", *str);
-		} else
-			count += _putchar(*str);
+			sum += _putchar(*p);
+			continue;
+		}
+		start = p;
+		p++;
+		while (get_flag(p, &params)) /* while char at p is flag char */
+		{
+			p++; /* next char */
+		}
+		p = get_width(p, &params, ap);
+		p = get_precision(p, &params, ap);
+		if (get_modifier(p, &params))
+			p++;
+		if (!get_specifier(p))
+			sum += print_from_to(start, p,
+				params.l_modifier || params.h_modifier ? p - 1 : 0);
+		else
+			sum += get_print_func(p, ap, &params);
 	}
-	_putchar(-1), va_end(args);
-	return (count);
+	_putchar(BUF_FLUSH);
+	va_end(ap);
+	return (sum);
 }
